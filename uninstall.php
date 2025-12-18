@@ -20,8 +20,18 @@ delete_option( 'ai360re_installed_at' );
 
 // Eliminar transients
 global $wpdb;
-$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_ai360re_%'" );
-$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_ai360re_%'" );
+$wpdb->query( 
+	$wpdb->prepare(
+		"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+		$wpdb->esc_like( '_transient_ai360re_' ) . '%'
+	)
+);
+$wpdb->query(
+	$wpdb->prepare(
+		"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+		$wpdb->esc_like( '_transient_timeout_ai360re_' ) . '%'
+	)
+);
 
 // Eliminar capabilities y roles personalizados (placeholder para futuras implementaciones)
 // remove_role( 'ai360re_agent' );
