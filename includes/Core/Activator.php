@@ -41,8 +41,13 @@ class Activator {
 			update_option( 'ai360re_installed_at', time() );
 		}
 
-		// Preparar para crear tablas (se implementa en PR-02)
-		// self::create_tables();
+		// Crear/actualizar tablas de base de datos
+		$migration_result = Migrations::run();
+
+		// Log error si falla la migración
+		if ( ! $migration_result ) {
+			error_log( 'AI360 Real Estate: Error creating database tables during activation' );
+		}
 
 		// Flush rewrite rules
 		flush_rewrite_rules();
