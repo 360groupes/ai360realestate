@@ -130,6 +130,13 @@ class Schema {
 	/**
 	 * Get properties table schema.
 	 *
+	 * Property Status Flow:
+	 * draft -> imported -> optimized -> validated -> ready -> published -> synced
+	 * Any status can go to: archived
+	 *
+	 * Note: Default country is 'ES' (Spain) as per client requirements.
+	 * This can be changed by applications using the plugin.
+	 *
 	 * @since 0.1.0
 	 * @param string $charset_collate Charset collate string.
 	 * @return string SQL for creating properties table.

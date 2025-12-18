@@ -17,6 +17,10 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 // Cargar autoloader de Composer
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	// Si no existe el autoloader, cargar las clases manualmente
+	require_once __DIR__ . '/includes/Core/Database.php';
+	require_once __DIR__ . '/includes/Core/Migrations.php';
 }
 
 // Eliminar todas las opciones del plugin

@@ -97,8 +97,10 @@ class Migrations {
 		$tables = Database::get_all_tables();
 
 		foreach ( $tables as $table ) {
+			// Escape table name with backticks for safety
+			$escaped_table = '`' . esc_sql( $table ) . '`';
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
+			$wpdb->query( "DROP TABLE IF EXISTS {$escaped_table}" );
 		}
 
 		delete_option( 'ai360re_schema_version' );
