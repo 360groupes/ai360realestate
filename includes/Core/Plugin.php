@@ -152,19 +152,19 @@ class Plugin {
 	 * Prevenir clonación del objeto (Singleton)
 	 *
 	 * @since 0.1.0
-	 * @return void
+	 * @throws \Exception Si se intenta clonar la instancia.
 	 */
 	private function __clone() {
-		// Singleton: Prevenir clonación
+		throw new \Exception( 'Cannot clone singleton' );
 	}
 
 	/**
 	 * Prevenir deserialización del objeto (Singleton)
 	 *
 	 * @since 0.1.0
-	 * @return void
+	 * @throws \Exception Si se intenta deserializar la instancia.
 	 */
 	public function __wakeup() {
-		// Singleton: Prevenir deserialización
+		throw new \Exception( 'Cannot unserialize singleton' );
 	}
 }

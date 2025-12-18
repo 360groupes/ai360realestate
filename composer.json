@@ -31,8 +31,8 @@
     "scripts": {
         "test": "phpunit",
         "test:coverage": "phpunit --coverage-html coverage",
-        "phpcs": "phpcs --standard=WordPress src/",
-        "phpcbf": "phpcbf --standard=WordPress src/"
+        "phpcs": "phpcs --standard=WordPress includes/",
+        "phpcbf": "phpcbf --standard=WordPress includes/"
     },
     "config": {
         "allow-plugins": {
