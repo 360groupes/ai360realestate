@@ -49,6 +49,25 @@ class Activator {
 			error_log( 'AI360 Real Estate: Error creating database tables during activation' );
 		}
 
+		// Schedule log cleanup cron job
+		if ( ! wp_next_scheduled( 'ai360re_cleanup_logs' ) ) {
+			wp_schedule_event( time(), 'daily', 'ai360re_cleanup_logs' );
+		}
+
+		// Initialize default logging options
+		if ( ! get_option( 'ai360re_logging_enabled' ) ) {
+			update_option( 'ai360re_logging_enabled', true );
+		}
+		if ( ! get_option( 'ai360re_log_level' ) ) {
+			update_option( 'ai360re_log_level', 'info' );
+		}
+		if ( ! get_option( 'ai360re_log_retention_days' ) ) {
+			update_option( 'ai360re_log_retention_days', 30 );
+		}
+		if ( ! get_option( 'ai360re_audit_retention_days' ) ) {
+			update_option( 'ai360re_audit_retention_days', 90 );
+		}
+
 		// Flush rewrite rules
 		flush_rewrite_rules();
 	}
