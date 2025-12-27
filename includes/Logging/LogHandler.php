@@ -149,7 +149,7 @@ class LogHandler {
 	 * @return string Formatted message.
 	 */
 	private function format_message( string $level, string $message, array $context = array() ): string {
-		$timestamp = gmdate( 'Y-m-d H:i:s' );
+		$timestamp = current_time( 'mysql', true );
 		$level     = strtoupper( $level );
 
 		$formatted = "[{$timestamp}] [{$level}] {$message}";

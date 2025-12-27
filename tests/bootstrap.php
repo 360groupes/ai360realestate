@@ -68,18 +68,6 @@ if ( ! function_exists( 'get_option' ) ) {
 	}
 }
 
-if ( ! function_exists( 'error_log' ) ) {
-	/**
-	 * Mock error_log for testing.
-	 *
-	 * @param string $message Error message.
-	 * @return bool True.
-	 */
-	function error_log( $message ) {
-		return true;
-	}
-}
-
 if ( ! function_exists( 'current_time' ) ) {
 	/**
 	 * Mock current_time for testing.

@@ -429,18 +429,34 @@ class AuditLogger {
 	/**
 	 * Get client IP address.
 	 *
+	 * Note: For security-critical audit logging, REMOTE_ADDR is prioritized
+	 * as it cannot be easily spoofed. X-Forwarded-For is only used if
+	 * behind a trusted proxy.
+	 *
 	 * @since 0.1.0
 	 * @return string|null IP address or null.
 	 */
 	private static function get_client_ip(): ?string {
 		$ip = null;
 
-		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-			$ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ) );
-		} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			$ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
-		} elseif ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+		// Prioritize REMOTE_ADDR as it's most reliable
+		if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
 			$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+
+			// If behind a proxy and X-Forwarded-For is present, append it for reference
+			// but REMOTE_ADDR remains the primary IP for security
+			if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+				$forwarded = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+				// Extract first IP if multiple are present
+				$forwarded_ips = explode( ',', $forwarded );
+				$first_ip      = trim( $forwarded_ips[0] );
+				// Only append if different from REMOTE_ADDR
+				if ( $first_ip !== $ip ) {
+					$ip .= ' (via ' . $first_ip . ')';
+				}
+			}
+		} elseif ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+			$ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ) );
 		}
 
 		return $ip;
