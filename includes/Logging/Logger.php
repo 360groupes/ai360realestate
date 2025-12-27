@@ -67,7 +67,15 @@ class Logger {
 	 * @since 0.1.0
 	 */
 	private function __construct() {
-		$this->handler = new LogHandler();
+		try {
+			$this->handler = new LogHandler();
+		} catch ( \Exception $e ) {
+			// Fallback: log to WordPress debug.log if handler fails
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( '[AI360RE] Failed to initialize LogHandler: ' . $e->getMessage() );
+			}
+		}
 	}
 
 	/**
@@ -146,8 +154,10 @@ class Logger {
 			'context'   => $context,
 		);
 
-		// Write log
-		$this->handler->write( $entry );
+		// Write log if handler is available
+		if ( $this->handler ) {
+			$this->handler->write( $entry );
+		}
 
 		// Also log to WordPress debug.log if WP_DEBUG is enabled
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
@@ -221,6 +231,10 @@ class Logger {
 	 * @return int Number of logs deleted.
 	 */
 	public function cleanup_old_logs(): int {
+		if ( ! $this->handler ) {
+			return 0;
+		}
+
 		$retention_days = (int) get_option( 'ai360re_log_retention_days', 30 );
 
 		return $this->handler->cleanup( $retention_days );
@@ -235,6 +249,10 @@ class Logger {
 	 * @return array Array of log entries.
 	 */
 	public function get_recent_logs( int $limit = 100, string $level = '' ): array {
+		if ( ! $this->handler ) {
+			return array();
+		}
+
 		return $this->handler->get_recent( $limit, $level );
 	}
 

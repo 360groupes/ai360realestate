@@ -132,6 +132,10 @@ class LogHandler {
 	/**
 	 * Clean up old logs
 	 *
+	 * Note: This method loads the entire log file into memory.
+	 * For very large log files (>100MB), consider implementing
+	 * rotation instead of this cleanup approach.
+	 *
 	 * @since 0.1.0
 	 * @param int $retention_days Number of days to retain logs.
 	 * @return int Number of entries deleted.
@@ -262,11 +266,18 @@ class LogHandler {
 		if ( ! file_exists( $this->log_dir ) ) {
 			wp_mkdir_p( $this->log_dir );
 
-			// Create .htaccess to protect log files
+			// Create .htaccess to protect log files (Apache 2.2 and 2.4 compatible)
 			$htaccess_file = trailingslashit( $this->log_dir ) . '.htaccess';
 			$htaccess_content = "# Protect AI360 Real Estate log files\n";
+			$htaccess_content .= "# Apache 2.2\n";
+			$htaccess_content .= "<IfModule !mod_authz_core.c>\n";
 			$htaccess_content .= "Order deny,allow\n";
 			$htaccess_content .= "Deny from all\n";
+			$htaccess_content .= "</IfModule>\n\n";
+			$htaccess_content .= "# Apache 2.4\n";
+			$htaccess_content .= "<IfModule mod_authz_core.c>\n";
+			$htaccess_content .= "Require all denied\n";
+			$htaccess_content .= "</IfModule>\n";
 
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 			file_put_contents( $htaccess_file, $htaccess_content );

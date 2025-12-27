@@ -268,10 +268,16 @@ class AuditLogger {
 	/**
 	 * Get client IP address
 	 *
+	 * Note: Proxy headers can be spoofed. In production, configure
+	 * trusted proxies via the ai360re_trusted_proxies filter.
+	 *
 	 * @since 0.1.0
 	 * @return string Client IP address.
 	 */
 	private function get_client_ip(): string {
+		// Get list of trusted proxy IPs (empty by default for security)
+		$trusted_proxies = apply_filters( 'ai360re_trusted_proxies', array() );
+
 		$ip_keys = array(
 			'HTTP_CLIENT_IP',
 			'HTTP_X_FORWARDED_FOR',
@@ -282,6 +288,18 @@ class AuditLogger {
 			'REMOTE_ADDR',
 		);
 
+		// If no trusted proxies configured, only use REMOTE_ADDR for security
+		if ( empty( $trusted_proxies ) ) {
+			if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+				$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+				if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+					return $ip;
+				}
+			}
+			return '0.0.0.0';
+		}
+
+		// If trusted proxies are configured, check proxy headers
 		foreach ( $ip_keys as $key ) {
 			if ( isset( $_SERVER[ $key ] ) ) {
 				$ip = sanitize_text_field( wp_unslash( $_SERVER[ $key ] ) );
