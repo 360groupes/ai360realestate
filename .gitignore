@@ -23,5 +23,8 @@ Thumbs.db
 # Logs
 *.log
 
+# PHPUnit
+.phpunit.result.cache
+
 # WordPress
 wp-config.php

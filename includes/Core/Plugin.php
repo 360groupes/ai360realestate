@@ -122,6 +122,7 @@ class Plugin {
 	 */
 	private function init_hooks() {
 		add_action( 'init', array( $this, 'load_textdomain' ) );
+		add_action( 'ai360re_cleanup_logs', array( $this, 'cleanup_logs' ) );
 	}
 
 	/**
@@ -136,6 +137,24 @@ class Plugin {
 			false,
 			dirname( AI360RE_PLUGIN_BASENAME ) . '/languages'
 		);
+	}
+
+	/**
+	 * Clean up old logs via scheduled cron job.
+	 *
+	 * @since 0.1.0
+	 * @return void
+	 */
+	public function cleanup_logs() {
+		// Get retention days from options (default: 30 for file logs, 90 for audit logs)
+		$file_log_retention  = (int) get_option( 'ai360re_file_log_retention', 30 );
+		$audit_log_retention = (int) get_option( 'ai360re_audit_log_retention', 90 );
+
+		// Clean up file logs
+		\AI360RealEstate\Logging\Logger::cleanup( $file_log_retention );
+
+		// Clean up audit logs
+		\AI360RealEstate\Logging\AuditLogger::cleanup( $audit_log_retention );
 	}
 
 	/**

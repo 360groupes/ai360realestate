@@ -49,6 +49,11 @@ class Activator {
 			error_log( 'AI360 Real Estate: Error creating database tables during activation' );
 		}
 
+		// Schedule log cleanup cron event
+		if ( ! wp_next_scheduled( 'ai360re_cleanup_logs' ) ) {
+			wp_schedule_event( time(), 'daily', 'ai360re_cleanup_logs' );
+		}
+
 		// Flush rewrite rules
 		flush_rewrite_rules();
 	}
