@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- PR-03: Sistema de Logging y Auditoría
+  - Logger centralizado con múltiples niveles (debug, info, warning, error)
+  - AuditLogger para registro de acciones en la tabla audit_log
+  - LogHandler para gestión de archivos de log
+  - Sistema de retención y limpieza automática de logs
+  - Tests unitarios para sistema de logging
+
 ## [0.1.0] - 2025-12-18
 
 ### Added
@@ -27,3 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Estructura de directorios completa
   - Configuración de PHPUnit
   - Script de desinstalación
+
+- PR-02: Esquema de base de datos
+  - 8 tablas personalizadas con prefijo ai360re_
+  - Sistema de migraciones versionado
+  - Clase Database para gestión de conexión
+  - Clase Schema para definiciones SQL
+  - Integración con Activator para creación de tablas
+  - Limpieza completa en desinstalación

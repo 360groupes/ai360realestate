@@ -122,6 +122,7 @@ class Plugin {
 	 */
 	private function init_hooks() {
 		add_action( 'init', array( $this, 'load_textdomain' ) );
+		add_action( 'ai360re_cleanup_logs', array( $this, 'cleanup_logs' ) );
 	}
 
 	/**
@@ -146,6 +147,25 @@ class Plugin {
 	 */
 	public function get_version() {
 		return AI360RE_VERSION;
+	}
+
+	/**
+	 * Cleanup old logs
+	 *
+	 * Scheduled task to clean up old log files and audit entries.
+	 *
+	 * @since 0.1.0
+	 * @return void
+	 */
+	public function cleanup_logs() {
+		// Cleanup file logs
+		$logger = \AI360RealEstate\Logging\Logger::get_instance();
+		$logger->cleanup_old_logs();
+
+		// Cleanup audit logs
+		$audit_logger = \AI360RealEstate\Logging\AuditLogger::get_instance();
+		$retention_days = (int) get_option( 'ai360re_audit_retention_days', 90 );
+		$audit_logger->cleanup_old_logs( $retention_days );
 	}
 
 	/**

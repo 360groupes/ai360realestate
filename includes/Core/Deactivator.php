@@ -30,8 +30,11 @@ class Deactivator {
 	 * @return void
 	 */
 	public static function deactivate() {
-		// Limpiar cron jobs programados (placeholder para futuras implementaciones)
-		// self::clear_scheduled_events();
+		// Clear scheduled log cleanup
+		$timestamp = wp_next_scheduled( 'ai360re_cleanup_logs' );
+		if ( $timestamp ) {
+			wp_unschedule_event( $timestamp, 'ai360re_cleanup_logs' );
+		}
 
 		// Flush rewrite rules
 		flush_rewrite_rules();
