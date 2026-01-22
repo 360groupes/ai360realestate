@@ -1,0 +1,10 @@
+{
+  "slug": "ai360chat-resales",
+  "name": "Resales Connector",
+  "description": "Conector de Resales-Online (Web API V6) para el sistema de inventario, fichas y chat de AI360Chat.",
+  "version": "1.0.0",
+  "main_file": "addon.php",
+  "main_class": "AI360Chat_Addon_Resales",
+  "min_core_version": "1.0.0",
+  "author": "360group.es"
+}
